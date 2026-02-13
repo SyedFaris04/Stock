@@ -1,0 +1,5 @@
+{
+  "name": "Copy of SyedQuant: Sentiment-Enhanced Trading System",
+  "description": "A sophisticated quantitative trading platform integrating multi-source sentiment (Reddit, News) with financial data, comparing Transformer-LSTM and XGBoost models for S&P 500 stocks.",
+  "requestFramePermissions": []
+}
