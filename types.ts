@@ -50,5 +50,8 @@ export enum Page {
   PREDICTION_CENTER = 'prediction-center',
   EDUCATION = 'education',
   PORTFOLIO = 'portfolio',
-  PIPELINE = 'pipeline'
+  PIPELINE = 'pipeline',
+  PROFILE = 'profile',
+  SECURITY = 'security',
+  SETTINGS = 'settings'
 }

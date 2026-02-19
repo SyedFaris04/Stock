@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { NAV_ITEMS } from '../constants';
+import { NAV_ITEMS, ACCOUNT_ITEMS } from '../constants';
 import { Page } from '../types';
 import { TrendingUp, X } from 'lucide-react';
 
@@ -30,28 +30,57 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate, onClose, isO
       </div>
       
       <nav className="flex-1 px-4 py-4 overflow-y-auto custom-scrollbar">
-        <ul className="space-y-1.5">
-          {NAV_ITEMS.map((item) => (
-            <li key={item.id}>
-              <button
-                onClick={() => {
-                  onNavigate(item.id);
-                  if (window.innerWidth < 1024) onClose();
-                }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${
-                  currentPage === item.id 
-                    ? 'bg-blue-600/10 text-blue-400 font-bold border border-blue-600/20 shadow-lg shadow-blue-500/5' 
-                    : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-200'
-                }`}
-              >
-                <span className={`transition-transform duration-300 group-hover:scale-110 ${currentPage === item.id ? 'text-blue-500' : 'text-slate-500 group-hover:text-blue-400'}`}>
-                  {item.icon}
-                </span>
-                <span className="text-sm tracking-tight">{item.label}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="mb-6">
+          <p className="px-4 mb-2 text-[10px] text-slate-500 font-black uppercase tracking-widest">Main Menu</p>
+          <ul className="space-y-1.5">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.id}>
+                <button
+                  onClick={() => {
+                    onNavigate(item.id);
+                    if (window.innerWidth < 1024) onClose();
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${
+                    currentPage === item.id 
+                      ? 'bg-blue-600/10 text-blue-400 font-bold border border-blue-600/20 shadow-lg shadow-blue-500/5' 
+                      : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-200'
+                  }`}
+                >
+                  <span className={`transition-transform duration-300 group-hover:scale-110 ${currentPage === item.id ? 'text-blue-500' : 'text-slate-500 group-hover:text-blue-400'}`}>
+                    {item.icon}
+                  </span>
+                  <span className="text-sm tracking-tight">{item.label}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <p className="px-4 mb-2 text-[10px] text-slate-500 font-black uppercase tracking-widest">Account</p>
+          <ul className="space-y-1.5">
+            {ACCOUNT_ITEMS.map((item) => (
+              <li key={item.id}>
+                <button
+                  onClick={() => {
+                    onNavigate(item.id);
+                    if (window.innerWidth < 1024) onClose();
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${
+                    currentPage === item.id 
+                      ? 'bg-blue-600/10 text-blue-400 font-bold border border-blue-600/20 shadow-lg shadow-blue-500/5' 
+                      : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-200'
+                  }`}
+                >
+                  <span className={`transition-transform duration-300 group-hover:scale-110 ${currentPage === item.id ? 'text-blue-500' : 'text-slate-500 group-hover:text-blue-400'}`}>
+                    {item.icon}
+                  </span>
+                  <span className="text-sm tracking-tight">{item.label}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </nav>
 
       <div className="p-6 border-t border-slate-800/60">

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LayoutDashboard, TrendingUp, BarChart3, FlaskConical, MessageSquare, BrainCircuit, GraduationCap, Briefcase, Terminal } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, BarChart3, FlaskConical, MessageSquare, BrainCircuit, GraduationCap, Briefcase, Terminal, User, Shield, Settings } from 'lucide-react';
 import { Page, StockInfo, ModelPerformance } from './types';
 
 export const NAV_ITEMS = [
@@ -13,6 +13,12 @@ export const NAV_ITEMS = [
   { id: Page.PREDICTION_CENTER, label: 'Prediction Center', icon: <BrainCircuit className="w-5 h-5" /> },
   { id: Page.PIPELINE, label: 'Research Lab', icon: <Terminal className="w-5 h-5" /> },
   { id: Page.EDUCATION, label: 'Learn Quant', icon: <GraduationCap className="w-5 h-5" /> },
+];
+
+export const ACCOUNT_ITEMS = [
+  { id: Page.PROFILE, label: 'Profile', icon: <User className="w-5 h-5" /> },
+  { id: Page.SECURITY, label: 'Security', icon: <Shield className="w-5 h-5" /> },
+  { id: Page.SETTINGS, label: 'Settings', icon: <Settings className="w-5 h-5" /> },
 ];
 
 export const STOCKS: StockInfo[] = [

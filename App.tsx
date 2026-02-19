@@ -11,6 +11,9 @@ import PredictionCenter from './pages/PredictionCenter';
 import Education from './pages/Education';
 import Portfolio from './pages/Portfolio';
 import QuantPipeline from './pages/QuantPipeline';
+import Profile from './pages/Profile';
+import Security from './pages/Security';
+import SettingsPage from './pages/Settings';
 import LoginPage from './pages/LoginPage';
 import StockSearchModal from './components/StockSearchModal';
 import { Bell, Search, User, Menu, ChevronDown, LogOut, Settings, Shield, X } from 'lucide-react';
@@ -22,7 +25,6 @@ const App: React.FC = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchTicker, setSearchTicker] = useState<string | null>(null);
-  const [activeModal, setActiveModal] = useState<'profile' | 'security' | 'settings' | null>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,6 +59,9 @@ const App: React.FC = () => {
       case Page.PREDICTION_CENTER: return <PredictionCenter />;
       case Page.EDUCATION: return <Education />;
       case Page.PIPELINE: return <QuantPipeline />;
+      case Page.PROFILE: return <Profile />;
+      case Page.SECURITY: return <Security />;
+      case Page.SETTINGS: return <SettingsPage />;
       default: return <Dashboard />;
     }
   };
@@ -90,29 +95,6 @@ const App: React.FC = () => {
       {/* Modals */}
       {searchTicker && (
         <StockSearchModal ticker={searchTicker} onClose={() => setSearchTicker(null)} />
-      )}
-
-      {activeModal && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={() => setActiveModal(null)}></div>
-          <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-white capitalize">{activeModal}</h3>
-              <button onClick={() => setActiveModal(null)} className="p-2 hover:bg-slate-800 rounded-lg text-slate-400"><X size={20} /></button>
-            </div>
-            <div className="space-y-4">
-              <p className="text-slate-400 text-sm">This is your <span className="text-white font-bold">{activeModal}</span> management panel. All changes are encrypted and synced with SyedQuant Cloud.</p>
-              <div className="p-4 bg-slate-800/40 border border-slate-700/50 rounded-xl">
-                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">Status</p>
-                <p className="text-emerald-500 font-bold flex items-center gap-2">
-                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                  Active & Secure
-                </p>
-              </div>
-              <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-all">Update Information</button>
-            </div>
-          </div>
-        </div>
       )}
 
       {/* Mobile Overlay */}
@@ -174,19 +156,19 @@ const App: React.FC = () => {
                    </div>
                    <div className="py-1">
                      <button 
-                       onClick={() => { setActiveModal('profile'); setIsUserMenuOpen(false); }}
+                       onClick={() => { setCurrentPage(Page.PROFILE); setIsUserMenuOpen(false); }}
                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
                      >
                        <User size={14} /> Profile
                      </button>
                      <button 
-                       onClick={() => { setActiveModal('security'); setIsUserMenuOpen(false); }}
+                       onClick={() => { setCurrentPage(Page.SECURITY); setIsUserMenuOpen(false); }}
                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
                      >
                        <Shield size={14} /> Security
                      </button>
                      <button 
-                       onClick={() => { setActiveModal('settings'); setIsUserMenuOpen(false); }}
+                       onClick={() => { setCurrentPage(Page.SETTINGS); setIsUserMenuOpen(false); }}
                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
                      >
                        <Settings size={14} /> Settings
