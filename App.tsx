@@ -11,12 +11,18 @@ import PredictionCenter from './pages/PredictionCenter';
 import Education from './pages/Education';
 import Portfolio from './pages/Portfolio';
 import QuantPipeline from './pages/QuantPipeline';
-import { Bell, Search, User, Menu, ChevronDown, LogOut, Settings, Shield } from 'lucide-react';
+import LoginPage from './pages/LoginPage';
+import StockSearchModal from './components/StockSearchModal';
+import { Bell, Search, User, Menu, ChevronDown, LogOut, Settings, Shield, X } from 'lucide-react';
 
 const App: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentPage, setCurrentPage] = useState<Page>(Page.DASHBOARD);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchTicker, setSearchTicker] = useState<string | null>(null);
+  const [activeModal, setActiveModal] = useState<'profile' | 'security' | 'settings' | null>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -55,6 +61,23 @@ const App: React.FC = () => {
     }
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setSearchTicker(searchQuery.trim().toUpperCase());
+      setSearchQuery('');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setIsUserMenuOpen(false);
+  };
+
+  if (!isLoggedIn) {
+    return <LoginPage onLogin={() => setIsLoggedIn(true)} />;
+  }
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#0f172a] selection:bg-blue-500/30">
       <Sidebar 
@@ -63,6 +86,34 @@ const App: React.FC = () => {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />
+
+      {/* Modals */}
+      {searchTicker && (
+        <StockSearchModal ticker={searchTicker} onClose={() => setSearchTicker(null)} />
+      )}
+
+      {activeModal && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={() => setActiveModal(null)}></div>
+          <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white capitalize">{activeModal}</h3>
+              <button onClick={() => setActiveModal(null)} className="p-2 hover:bg-slate-800 rounded-lg text-slate-400"><X size={20} /></button>
+            </div>
+            <div className="space-y-4">
+              <p className="text-slate-400 text-sm">This is your <span className="text-white font-bold">{activeModal}</span> management panel. All changes are encrypted and synced with SyedQuant Cloud.</p>
+              <div className="p-4 bg-slate-800/40 border border-slate-700/50 rounded-xl">
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">Status</p>
+                <p className="text-emerald-500 font-bold flex items-center gap-2">
+                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                  Active & Secure
+                </p>
+              </div>
+              <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-all">Update Information</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Mobile Overlay */}
       <div 
@@ -81,14 +132,16 @@ const App: React.FC = () => {
             </button>
             
             <div className="flex-1 max-w-md hidden sm:block">
-              <div className="relative group">
+              <form onSubmit={handleSearch} className="relative group">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4 group-focus-within:text-blue-500 transition-colors" />
                 <input 
                   type="text" 
-                  placeholder="Search signals..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search ticker (e.g. AAPL, TSLA)..." 
                   className="w-full bg-slate-800/40 border border-slate-700/50 rounded-lg py-2 pl-10 pr-4 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/50 transition-all placeholder:text-slate-600"
                 />
-              </div>
+              </form>
             </div>
           </div>
 
@@ -120,18 +173,30 @@ const App: React.FC = () => {
                      <p className="text-sm text-white font-bold truncate">Syed Faris</p>
                    </div>
                    <div className="py-1">
-                     <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
+                     <button 
+                       onClick={() => { setActiveModal('profile'); setIsUserMenuOpen(false); }}
+                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+                     >
                        <User size={14} /> Profile
                      </button>
-                     <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
+                     <button 
+                       onClick={() => { setActiveModal('security'); setIsUserMenuOpen(false); }}
+                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+                     >
                        <Shield size={14} /> Security
                      </button>
-                     <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
+                     <button 
+                       onClick={() => { setActiveModal('settings'); setIsUserMenuOpen(false); }}
+                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+                     >
                        <Settings size={14} /> Settings
                      </button>
                    </div>
                    <div className="border-t border-slate-800 pt-1">
-                     <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-rose-500 hover:bg-rose-500/10 transition-colors">
+                     <button 
+                       onClick={handleLogout}
+                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-rose-500 hover:bg-rose-500/10 transition-colors"
+                     >
                        <LogOut size={14} /> Log Out
                      </button>
                    </div>

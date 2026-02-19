@@ -38,3 +38,27 @@ export const getEducationalContent = async (topic: string) => {
     return "Content could not be loaded.";
   }
 };
+
+export const getStockAnalysis = async (ticker: string) => {
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: `Provide a comprehensive analysis for the stock ticker: ${ticker}.
+      Include:
+      1. Company Overview (1 sentence)
+      2. Key Financial Metrics (briefly mention 3)
+      3. Sentiment Analysis Summary (based on general market trends)
+      4. Investment Thesis: Should a user buy this stock? (Provide a "Think to Buy" section with pros and cons)
+      5. Educational Tip: Explain one technical indicator that is currently relevant for this stock.
+      
+      Format the output in clear Markdown with headers.`,
+      config: {
+        temperature: 0.7,
+      }
+    });
+    return response.text;
+  } catch (error) {
+    console.error("Gemini Analysis Error:", error);
+    return "Detailed analysis for this stock is currently unavailable.";
+  }
+};
