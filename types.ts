@@ -49,5 +49,6 @@ export enum Page {
   SENTIMENT_EXPLORER = 'sentiment-explorer',
   PREDICTION_CENTER = 'prediction-center',
   EDUCATION = 'education',
-  PORTFOLIO = 'portfolio'
+  PORTFOLIO = 'portfolio',
+  PIPELINE = 'pipeline'
 }

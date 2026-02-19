@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LayoutDashboard, TrendingUp, BarChart3, FlaskConical, MessageSquare, BrainCircuit, GraduationCap, Briefcase } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, BarChart3, FlaskConical, MessageSquare, BrainCircuit, GraduationCap, Briefcase, Terminal } from 'lucide-react';
 import { Page, StockInfo, ModelPerformance } from './types';
 
 export const NAV_ITEMS = [
@@ -11,6 +11,7 @@ export const NAV_ITEMS = [
   { id: Page.BACKTESTING, label: 'Backtesting Sim', icon: <FlaskConical className="w-5 h-5" /> },
   { id: Page.SENTIMENT_EXPLORER, label: 'Sentiment Explorer', icon: <MessageSquare className="w-5 h-5" /> },
   { id: Page.PREDICTION_CENTER, label: 'Prediction Center', icon: <BrainCircuit className="w-5 h-5" /> },
+  { id: Page.PIPELINE, label: 'Research Lab', icon: <Terminal className="w-5 h-5" /> },
   { id: Page.EDUCATION, label: 'Learn Quant', icon: <GraduationCap className="w-5 h-5" /> },
 ];
 

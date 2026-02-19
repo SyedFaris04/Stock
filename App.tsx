@@ -10,6 +10,7 @@ import SentimentExplorer from './pages/SentimentExplorer';
 import PredictionCenter from './pages/PredictionCenter';
 import Education from './pages/Education';
 import Portfolio from './pages/Portfolio';
+import QuantPipeline from './pages/QuantPipeline';
 import { Bell, Search, User, Menu, ChevronDown, LogOut, Settings, Shield } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -28,6 +29,17 @@ const App: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Auto-close sidebar on window resize if moving to large screen
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsSidebarOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const renderPage = () => {
     switch (currentPage) {
       case Page.DASHBOARD: return <Dashboard />;
@@ -38,13 +50,13 @@ const App: React.FC = () => {
       case Page.SENTIMENT_EXPLORER: return <SentimentExplorer />;
       case Page.PREDICTION_CENTER: return <PredictionCenter />;
       case Page.EDUCATION: return <Education />;
+      case Page.PIPELINE: return <QuantPipeline />;
       default: return <Dashboard />;
     }
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0f172a]">
-      {/* Sidebar - Transition based on visibility */}
+    <div className="flex h-screen overflow-hidden bg-[#0f172a] selection:bg-blue-500/30">
       <Sidebar 
         currentPage={currentPage} 
         onNavigate={setCurrentPage} 
@@ -52,81 +64,75 @@ const App: React.FC = () => {
         onClose={() => setIsSidebarOpen(false)}
       />
 
-      {/* Backdrop for mobile sidebar */}
-      {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] lg:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        ></div>
-      )}
+      {/* Mobile Overlay */}
+      <div 
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] lg:hidden transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        onClick={() => setIsSidebarOpen(false)}
+      ></div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 transition-all duration-300">
-        {/* Header */}
-        <header className="h-20 bg-slate-900/50 backdrop-blur-xl border-b border-slate-800 px-8 flex items-center justify-between sticky top-0 z-50">
-          <div className="flex items-center gap-4 lg:gap-8 flex-1">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
+        <header className="h-16 lg:h-20 bg-slate-900/50 backdrop-blur-xl border-b border-slate-800/60 px-4 lg:px-8 flex items-center justify-between sticky top-0 z-50 shrink-0">
+          <div className="flex items-center gap-3 lg:gap-8 flex-1">
             <button 
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2.5 bg-slate-800 border border-slate-700 text-slate-300 rounded-xl hover:text-white transition-all shadow-lg shadow-black/20 group"
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-2 lg:hidden bg-slate-800 border border-slate-700 text-slate-300 rounded-xl hover:text-white transition-all shadow-lg active:scale-95"
             >
-              <Menu className={`w-5 h-5 transition-transform ${isSidebarOpen ? 'rotate-90' : ''}`} />
+              <Menu className="w-5 h-5" />
             </button>
             
-            <div className="flex-1 max-w-xl hidden md:block">
+            <div className="flex-1 max-w-md hidden sm:block">
               <div className="relative group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4 group-focus-within:text-blue-500 transition-colors" />
                 <input 
                   type="text" 
-                  placeholder="Search sentiment, symbols, or signals..." 
-                  className="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl py-2.5 pl-12 pr-4 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                  placeholder="Search signals..." 
+                  className="w-full bg-slate-800/40 border border-slate-700/50 rounded-lg py-2 pl-10 pr-4 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/50 transition-all placeholder:text-slate-600"
                 />
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-6 ml-8">
-            <button className="relative p-2 text-slate-400 hover:text-white transition-colors hidden sm:block">
+          <div className="flex items-center gap-3 lg:gap-6 ml-4">
+            <button className="relative p-2 text-slate-400 hover:text-white transition-colors hidden xs:block">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full border-2 border-slate-900"></span>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full border-2 border-slate-900"></span>
             </button>
-            <div className="h-8 w-[1px] bg-slate-800 hidden sm:block"></div>
+            <div className="h-6 w-[1px] bg-slate-800 hidden xs:block"></div>
             
             <div className="relative" ref={userMenuRef}>
               <div 
-                className="flex items-center gap-3 cursor-pointer group"
+                className="flex items-center gap-2 lg:gap-3 cursor-pointer group"
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               >
-                <div className="text-right hidden md:block">
+                <div className="text-right hidden sm:block">
                   <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">Syed Faris</p>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">Premium Partner</p>
+                  <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Partner</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 border-2 border-slate-800 flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-105 transition-transform">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 border-2 border-slate-800 flex items-center justify-center text-white text-xs lg:text-sm font-bold shadow-lg group-hover:scale-105 transition-transform ring-0 group-hover:ring-4 ring-blue-500/10">
                   SF
                 </div>
-                <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''} hidden xs:block`} />
               </div>
 
-              {/* User Dropdown Menu */}
               {isUserMenuOpen && (
-                <div className="absolute right-0 mt-4 w-56 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl py-2 animate-in slide-in-from-top-2 duration-200">
-                   <div className="px-4 py-3 border-b border-slate-800">
-                     <p className="text-xs font-bold text-slate-500 uppercase mb-1">Signed in as</p>
-                     <p className="text-sm text-white font-bold truncate">syed.faris@techpartner.com</p>
+                <div className="absolute right-0 mt-3 w-48 lg:w-56 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                   <div className="px-4 py-3 border-b border-slate-800 lg:hidden">
+                     <p className="text-sm text-white font-bold truncate">Syed Faris</p>
                    </div>
-                   <div className="py-2">
+                   <div className="py-1">
                      <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
-                       <User size={16} /> My Profile
+                       <User size={14} /> Profile
                      </button>
                      <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
-                       <Shield size={16} /> Security Settings
+                       <Shield size={14} /> Security
                      </button>
                      <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
-                       <Settings size={16} /> Preferences
+                       <Settings size={14} /> Settings
                      </button>
                    </div>
-                   <div className="border-t border-slate-800 pt-2 pb-1">
+                   <div className="border-t border-slate-800 pt-1">
                      <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-rose-500 hover:bg-rose-500/10 transition-colors">
-                       <LogOut size={16} /> Log Out
+                       <LogOut size={14} /> Log Out
                      </button>
                    </div>
                 </div>
@@ -135,18 +141,19 @@ const App: React.FC = () => {
           </div>
         </header>
 
-        {/* Scrollable Content Area */}
-        <main className={`flex-1 overflow-y-auto p-8 max-w-[1600px] mx-auto w-full transition-opacity duration-300 ${isSidebarOpen && window.innerWidth < 1024 ? 'opacity-30' : 'opacity-100'}`}>
-          {renderPage()}
-          
-          <footer className="mt-20 py-8 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center text-slate-500 text-[10px] uppercase font-bold tracking-widest gap-4">
-            <p>© 2024 SyedQuant Systems — Synergy with Syed Technologies</p>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-blue-400 transition-colors">Documentation</a>
-              <a href="#" className="hover:text-blue-400 transition-colors">Advanced API</a>
-              <a href="#" className="hover:text-blue-400 transition-colors">Risk Protocol</a>
-            </div>
-          </footer>
+        <main className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+          <div className="p-4 sm:p-6 lg:p-8 max-w-[1440px] mx-auto w-full">
+            {renderPage()}
+            
+            <footer className="mt-12 lg:mt-20 py-8 border-t border-slate-800/60 flex flex-col md:flex-row justify-between items-center text-slate-500 text-[10px] uppercase font-bold tracking-widest gap-4 text-center md:text-left">
+              <p>© 2024 SyedQuant Systems — Synergy with Syed Technologies</p>
+              <div className="flex gap-4 lg:gap-6">
+                <a href="#" className="hover:text-blue-400 transition-colors">Docs</a>
+                <a href="#" className="hover:text-blue-400 transition-colors">API</a>
+                <a href="#" className="hover:text-blue-400 transition-colors">Privacy</a>
+              </div>
+            </footer>
+          </div>
         </main>
       </div>
     </div>

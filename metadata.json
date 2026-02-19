@@ -1,5 +1,5 @@
 {
-  "name": "Copy of SyedQuant: Sentiment-Enhanced Trading System",
-  "description": "A sophisticated quantitative trading platform integrating multi-source sentiment (Reddit, News) with financial data, comparing Transformer-LSTM and XGBoost models for S&P 500 stocks.",
+  "name": "SyedQuant: Sentiment Trading Lab",
+  "description": "A high-fidelity quantitative trading simulator. This interface visualizes the outputs of a Python-based Research Pipeline utilizing FinBERT, Transformer-LSTM, and XGBoost models.",
   "requestFramePermissions": []
 }
